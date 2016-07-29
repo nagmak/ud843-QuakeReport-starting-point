@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by nagma on 07.28.16.
@@ -34,13 +36,37 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         quakeMagnitudeTextView.setText(magnitudeValue);
 
         // Sets location onto the layout
+        TextView quakeDistanceTextView = (TextView) listItemView.findViewById(R.id.distance);
         TextView quakeLocationTextView = (TextView) listItemView.findViewById(R.id.location);
-        quakeLocationTextView.setText(currentQuake.getLocation());
+
+        String location = currentQuake.getLocation();
+        String distance = "", currentPlace = "";
+        for (int i = 0; i < location.length(); i++){
+            CharSequence charSeq = "of";
+            if (location.contains(charSeq)){
+                int index = location.indexOf(charSeq.charAt(1));
+                distance = location.substring(0, index+1);
+                currentPlace = location.substring(index+1, location.length());
+            }
+            // String[] place = location.split("of");
+            // distance = place[0];
+            // currentPlace = place[1];
+        }
+        quakeDistanceTextView.setText(distance);
+        quakeLocationTextView.setText(currentPlace);
 
         // Sets date onto the layout
         TextView quakeDateTextView = (TextView) listItemView.findViewById(R.id.date_view);
-        String timeValue = Double.toString(currentQuake.getTime());
-        quakeDateTextView.setText(timeValue);
+        Date dateObject = new Date(currentQuake.getTime());
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM DD, yyyy");
+        String date = dateFormatter.format(dateObject);
+        quakeDateTextView.setText(date);
+
+        // Sets time onto the layout
+        TextView quakeTimeTextView = (TextView) listItemView.findViewById(R.id.time_view);
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("h:mm a");
+        String timeValue = timeFormatter.format(dateObject);
+        quakeTimeTextView.setText(timeValue);
 
         return listItemView;
     }
