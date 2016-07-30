@@ -15,6 +15,9 @@ import java.util.Date;
  * Created by nagma on 07.28.16.
  */
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
+
+    private static final String LOCATION_SEPARATOR = " of ";
+
     public EarthquakeAdapter(Activity context, ArrayList<Earthquake> earthquakes){
         super(context, 0, earthquakes);
     }
@@ -42,15 +45,11 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         String location = currentQuake.getLocation();
         String distance = "", currentPlace = "";
         for (int i = 0; i < location.length(); i++){
-            CharSequence charSeq = "of";
-            if (location.contains(charSeq)){
-                int index = location.indexOf(charSeq.charAt(1));
-                distance = location.substring(0, index+1);
-                currentPlace = location.substring(index+1, location.length());
+            if (location.contains(LOCATION_SEPARATOR)){
+                String[] place = location.split(LOCATION_SEPARATOR);
+                distance = place[0] + LOCATION_SEPARATOR;
+                currentPlace = place[1];
             }
-            // String[] place = location.split("of");
-            // distance = place[0];
-            // currentPlace = place[1];
         }
         quakeDistanceTextView.setText(distance);
         quakeLocationTextView.setText(currentPlace);
