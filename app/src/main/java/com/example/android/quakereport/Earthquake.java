@@ -9,7 +9,6 @@ import java.util.Date;
 public class Earthquake {
     private String mLocation;
     private double mMagnitude;
-//    private String mDate;
     private long mTime;
 
     public Earthquake(double magnitude, String location, long time){
@@ -17,10 +16,6 @@ public class Earthquake {
         this.mMagnitude = magnitude;
         this.mTime = time;
     }
-
-//    public Earthquake(String date){
-//        this.mDate = date;
-//    }
 
     public String getLocation(){
         return mLocation;
@@ -31,6 +26,4 @@ public class Earthquake {
     }
 
     public long getTime(){ return mTime; }
-
-//    public String getDate(){ return mDate; }
 }
