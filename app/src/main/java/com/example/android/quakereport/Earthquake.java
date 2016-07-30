@@ -8,13 +8,15 @@ import java.util.Date;
  */
 public class Earthquake {
     private String mLocation;
+    private String mWebsite;
     private double mMagnitude;
     private long mTime;
 
-    public Earthquake(double magnitude, String location, long time){
+    public Earthquake(double magnitude, String location, long time, String website){
         this.mLocation = location;
         this.mMagnitude = magnitude;
         this.mTime = time;
+        this.mWebsite = website;
     }
 
     public String getLocation(){
@@ -26,4 +28,6 @@ public class Earthquake {
     }
 
     public long getTime(){ return mTime; }
+
+    public String getWebsite(){ return mWebsite; }
 }

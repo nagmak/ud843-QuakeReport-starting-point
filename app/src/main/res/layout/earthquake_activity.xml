@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:paddingTop="8dp"
+        android:paddingTop="7dp"
         android:paddingLeft="6dp"
         android:text="7.2"
         android:textSize="16sp"
@@ -44,17 +44,21 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Distance"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:layout_weight="1"
-            android:id="@+id/distance" />
+            android:maxLines="1"
+            android:id="@+id/distance"
+            android:textColor="@color/textColorEarthquakeDetails"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Location"
             android:textSize="16sp"
+            android:maxLines="2"
             android:layout_weight="1"
-            android:id="@+id/location" />
+            android:id="@+id/location"
+            android:textColor="@color/textColorEarthquakeLocation"/>
 
     </LinearLayout>
 
@@ -69,16 +73,20 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Date"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:layout_weight="1"
+            android:layout_gravity="end"
+            android:textColor="@color/textColorEarthquakeDetails"
             android:id="@+id/date_view" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="end"
             android:text="Time"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:layout_weight="1"
+            android:textColor="@color/textColorEarthquakeDetails"
             android:id="@+id/time_view" />
 
     </LinearLayout>

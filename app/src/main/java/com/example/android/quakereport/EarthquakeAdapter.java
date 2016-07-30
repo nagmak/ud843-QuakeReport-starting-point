@@ -1,12 +1,16 @@
 package com.example.android.quakereport;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -34,7 +38,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         }
 
         // Gets the current quake's information at this position in the index
-        Earthquake currentQuake = getItem(position);
+        final Earthquake currentQuake = getItem(position);
 
         // Sets the magnitude value on the layout
         TextView quakeMagnitudeTextView = (TextView) listItemView.findViewById(R.id.magnitude);
@@ -44,7 +48,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         GradientDrawable magnitudeCircle = (GradientDrawable) quakeMagnitudeTextView.getBackground();
 
         // Returns magnitude color id, converts into the actual color value
-        int magnitudeColor = ContextCompat.getColor(getContext(), getMagnitudeColorID(currentQuake.getMagnitude()));
+        int magnitudeColor = getMagnitudeColor(currentQuake.getMagnitude());
         magnitudeCircle.setColor(magnitudeColor);
 
         // Sets location onto the layout
@@ -77,44 +81,64 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         String timeValue = timeFormatter.format(dateObject);
         quakeTimeTextView.setText(timeValue);
 
+        LinearLayout clickView = (LinearLayout) listItemView.findViewById(R.id.text_container);
+        clickView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                openCurrentQuakeSite(currentQuake.getWebsite());
+            }
+        });
+
         return listItemView;
     }
 
-    // Returns color resource ID for the background color of the corresponding magnitude
-    private int getMagnitudeColorID(double magnitude){
+    // Returns background color for the corresponding magnitude
+    private int getMagnitudeColor(double magnitude){
+        int magnitudeFloor = (int) Math.floor(magnitude);
         int magColorID = 0;
 
-        if (magnitude >= 0 && magnitude <= 2){
-            magColorID = R.color.magnitude1;
+        switch (magnitudeFloor) {
+            case 0:
+            case 1:
+                magColorID = R.color.magnitude1;
+                break;
+            case 2:
+                magColorID = R.color.magnitude2;
+                break;
+            case 3:
+                magColorID = R.color.magnitude3;
+                break;
+            case 4:
+                magColorID = R.color.magnitude4;
+                break;
+            case 5:
+                magColorID = R.color.magnitude5;
+                break;
+            case 6:
+                magColorID = R.color.magnitude6;
+                break;
+            case 7:
+                magColorID = R.color.magnitude7;
+                break;
+            case 8:
+                magColorID = R.color.magnitude8;
+                break;
+            case 9:
+                magColorID = R.color.magnitude9;
+                break;
+            default:
+                magColorID = R.color.magnitude10plus;
+                break;
         }
-        else if (magnitude > 2 && magnitude <= 3){
-            magColorID = R.color.magnitude2;
-        }
-        else if (magnitude > 3 && magnitude <= 4){
-            magColorID = R.color.magnitude3;
-        }
-        else if (magnitude > 4 && magnitude <= 5){
-            magColorID = R.color.magnitude4;
-        }
-        else if (magnitude > 5 && magnitude <= 6){
-            magColorID = R.color.magnitude5;
-        }
-        else if (magnitude > 6 && magnitude <= 7){
-            magColorID = R.color.magnitude6;
-        }
-        else if (magnitude > 7 && magnitude <= 8){
-            magColorID = R.color.magnitude7;
-        }
-        else if (magnitude > 8 && magnitude <= 9){
-            magColorID = R.color.magnitude8;
-        }
-        else if (magnitude > 9 && magnitude <= 10){
-            magColorID = R.color.magnitude9;
-        }
-        else if (magnitude > 10){
-            magColorID = R.color.magnitude10plus;
-        }
+        return ContextCompat.getColor(getContext(), magColorID);
+    }
 
-        return magColorID;
+    // Opens current earthquake's webpage on click
+    private void openCurrentQuakeSite(String website){
+        Uri webpage = Uri.parse(website);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            getContext().startActivity(intent);
+        }
     }
 }
