@@ -16,7 +16,10 @@
 package com.example.android.quakereport;
 
 import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +31,11 @@ import android.widget.ListView;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.LoaderManager;
 import android.content.Loader;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +54,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     /** Adapter for the list of earthquakes */
     private EarthquakeAdapter mAdapter;
 
+    /** View displayed only when there are no earthquakes*/
+    private TextView mEmptyStateView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +64,31 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
+        /** TextView that is displayed when the list is empty */
+        mEmptyStateView = (TextView) findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(mEmptyStateView);
+
+        /*Check for internet connectivity, notify user if there is none found*/
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+
+            // Get a reference to the LoaderManager, in order to interact with loaders.
+            LoaderManager loaderManager = getLoaderManager();
+
+            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+            // because this activity implements the LoaderCallbacks interface).
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        }
+        else{
+            // Set progress bar to gone
+            View loadingIndicator = (View) findViewById(R.id.load_indicator);
+            loadingIndicator.setVisibility(View.GONE);
+            mEmptyStateView.setText(R.string.no_internet);
+        }
 
         // Create a new adapter that takes an empty list of earthquakes as input
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -79,14 +115,6 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
                 startActivity(websiteIntent);
             }
         });
-
-        // Get a reference to the LoaderManager, in order to interact with loaders.
-        LoaderManager loaderManager = getLoaderManager();
-
-        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-        // because this activity implements the LoaderCallbacks interface).
-        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
     }
 
     @Override
@@ -97,6 +125,13 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        // Set progress bar to gone
+        View loadingIndicator = (View) findViewById(R.id.load_indicator);
+        loadingIndicator.setVisibility(View.GONE);
+
+        // Set empty state text to display "No earthquakes found."
+        mEmptyStateView.setText(R.string.no_earthquakes);
+
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
 
@@ -112,5 +147,4 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }
-
 }
